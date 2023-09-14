@@ -220,11 +220,11 @@ def score(whiteList, blackList):
                                     if not scores.has_option("TotalScores", team):
                                         scores.set("TotalScores", team, 0)
                                     currentScore = scores.getint( "TotalScores",team)
-                                    scores.set( "TotalScores", team, currentScore+serverAndScore[1])
+                                    scores.set( "TotalScores", team, currentScore+int(serverAndScore[1]))
                                     if not scores.has_option(serverScoresection, team):
                                         scores.set(serverScoresection, team, 0)
                                     currentScore = scores.getint( serverScoresection,team)
-                                    scores.set( serverScoresection, team, currentScore+serverAndScore[1])
+                                    scores.set( serverScoresection, team, currentScore+int(serverAndScore[1]))
                                 else:
                                     print(bcolors.FAIL + bcolors.BOLD + "User: " + team + " not in the white list! Score was not updated." + bcolors.ENDC)
                             elif blackListIsOn and not whiteListIsOn:
@@ -234,11 +234,11 @@ def score(whiteList, blackList):
                                     if not scores.has_option("TotalScores", team):
                                         scores.set("TotalScores", team, 0)
                                     currentScore = scores.getint( "TotalScores",team)
-                                    scores.set( "TotalScores", team, currentScore+serverAndScore[1])
+                                    scores.set( "TotalScores", team, currentScore+int(serverAndScore[1]))
                                     if not scores.has_option(serverScoresection, team):
                                         scores.set(serverScoresection, team, 0)
                                     currentScore = scores.getint( serverScoresection,team)
-                                    scores.set( serverScoresection, team, currentScore+serverAndScore[1])
+                                    scores.set( serverScoresection, team, currentScore+int(serverAndScore[1]))
                             elif whiteListIsOn and blackListIsOn:
                                 if team in blackList:
                                     print(bcolors.FAIL + bcolors.BOLD + "User: " + team + " is in the black list! Score was not updated." + bcolors.ENDC)
@@ -246,22 +246,22 @@ def score(whiteList, blackList):
                                     if not scores.has_option("TotalScores", team):
                                         scores.set("TotalScores", team, 0)
                                     currentScore = scores.getint( "TotalScores",team)
-                                    scores.set( "TotalScores", team, currentScore+serverAndScore[1])
+                                    scores.set( "TotalScores", team, currentScore+int(serverAndScore[1]))
                                     if not scores.has_option(serverScoresection, team):
                                         scores.set(serverScoresection, team, 0)
                                     currentScore = scores.getint( serverScoresection,team)
-                                    scores.set( serverScoresection, team, currentScore+serverAndScore[1])
+                                    scores.set( serverScoresection, team, currentScore+int(serverAndScore[1]))
                                 else:
                                     print(bcolors.FAIL + bcolors.BOLD + "User: " + team + " not in the white list! Score was not updated." + bcolors.ENDC)
                             else:
                                 if not scores.has_option("TotalScores", team):
                                     scores.set("TotalScores", team, 0)
                                 currentScore = scores.getint( "TotalScores",team)
-                                scores.set( "TotalScores", team, currentScore+serverAndScore[1])
+                                scores.set( "TotalScores", team, currentScore+int(serverAndScore[1]))
                                 if not scores.has_option(serverScoresection, team):
                                     scores.set(serverScoresection, team, 0)
                                 currentScore = scores.getint( serverScoresection,team)
-                                scores.set( serverScoresection, team, currentScore+serverAndScore[1])
+                                scores.set( serverScoresection, team, currentScore+int(serverAndScore[1]))
             except IOError:
                 response = os.system("ping -c 1 " + server[1] + " > /dev/null 2>&1")
                 if (response == 0):
