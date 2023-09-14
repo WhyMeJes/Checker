@@ -77,6 +77,7 @@ config = configparser.RawConfigParser()
 scores = configparser.RawConfigParser()
 configFile = ""
 serversToCheck = []
+scoresToAdd = []
 whiteListInit = ""
 blackListInit = ""
 sleepTime = ""
@@ -112,13 +113,14 @@ def loadConfig():
 
         print(bcolors.CYAN + bcolors.BOLD + "Loading Configurations" + bcolors.ENDC)
         
-        global configFile, serversToCheck, whiteListInit, blackListInit, sleepTime, outfile, outdir, startTime, endTime, whiteListIsOn, blackListIsOn, enablePropAcc, showTargetIP, enableCustomPorts, portsToCheck, enableBackUp
+        global configFile, serversToCheck,scoresToAdd, whiteListInit, blackListInit, sleepTime, outfile, outdir, startTime, endTime, whiteListIsOn, blackListIsOn, enablePropAcc, showTargetIP, enableCustomPorts, portsToCheck, enableBackUp
         
         # Clear the config before we reload it so we don't get list memory conflict hell
         config.clear()
 
         configFile = config.read("propane_config.ini")
         serversToCheck = config.items("Targets")
+        scoresToAdd = config.items("ScoresToAdd")
         whiteListInit = config.items("WhiteList")
         blackListInit = config.items("BlackList")
         sleepTime = config.getint("General", "sleeptime")
@@ -208,18 +210,58 @@ def score(whiteList, blackList):
                 html = url.read()
                 team = re.search('<team>(.*)</team>', str(html), re.IGNORECASE).group(1).strip().replace("=","").replace("<","").replace(">","")
                 if not len(team.replace(' ', '')) == 0:
+                    team = team.replace("_", " ").title().replace(" ", "_")
                     print(bcolors.BOLD + "Server " + server[0] + bcolors.ENDC + " pwned by " + bcolors.RED + team + bcolors.ENDC)
-                    for testname in whiteListInit:
+                    for serverAndScore in scoresToAdd:
                         serverScoresection = server[0]+"Scores"
-                        if str(server[1]) == str(testname[0]):
-                            if not scores.has_option("TotalScores", team):
-                                scores.set("TotalScores", team, 0)
-                            currentScore = scores.getint( "TotalScores",team)
-                            scores.set( "TotalScores", team, currentScore+int(testname[1]))
-                            if not scores.has_option(serverScoresection, team):
-                                scores.set(serverScoresection, team, 0)
-                            currentScore = scores.getint( serverScoresection,team)
-                            scores.set( serverScoresection, team, currentScore+int(testname[1]))
+                        if str(server[1]) == str(serverAndScore[0]):
+                            if whiteListIsOn and not blackListIsOn:
+                                if team in whiteList:
+                                    if not scores.has_option("TotalScores", team):
+                                        scores.set("TotalScores", team, 0)
+                                    currentScore = scores.getint( "TotalScores",team)
+                                    scores.set( "TotalScores", team, currentScore+serverAndScore[1])
+                                    if not scores.has_option(serverScoresection, team):
+                                        scores.set(serverScoresection, team, 0)
+                                    currentScore = scores.getint( serverScoresection,team)
+                                    scores.set( serverScoresection, team, currentScore+serverAndScore[1])
+                                else:
+                                    print(bcolors.FAIL + bcolors.BOLD + "User: " + team + " not in the white list! Score was not updated." + bcolors.ENDC)
+                            elif blackListIsOn and not whiteListIsOn:
+                                if team in blackList:
+                                    print(bcolors.FAIL + bcolors.BOLD + "User: " + team + " is in the black list! Score was not updated." + bcolors.ENDC)
+                                else:
+                                    if not scores.has_option("TotalScores", team):
+                                        scores.set("TotalScores", team, 0)
+                                    currentScore = scores.getint( "TotalScores",team)
+                                    scores.set( "TotalScores", team, currentScore+serverAndScore[1])
+                                    if not scores.has_option(serverScoresection, team):
+                                        scores.set(serverScoresection, team, 0)
+                                    currentScore = scores.getint( serverScoresection,team)
+                                    scores.set( serverScoresection, team, currentScore+serverAndScore[1])
+                            elif whiteListIsOn and blackListIsOn:
+                                if team in blackList:
+                                    print(bcolors.FAIL + bcolors.BOLD + "User: " + team + " is in the black list! Score was not updated." + bcolors.ENDC)
+                                elif team in whiteList:
+                                    if not scores.has_option("TotalScores", team):
+                                        scores.set("TotalScores", team, 0)
+                                    currentScore = scores.getint( "TotalScores",team)
+                                    scores.set( "TotalScores", team, currentScore+serverAndScore[1])
+                                    if not scores.has_option(serverScoresection, team):
+                                        scores.set(serverScoresection, team, 0)
+                                    currentScore = scores.getint( serverScoresection,team)
+                                    scores.set( serverScoresection, team, currentScore+serverAndScore[1])
+                                else:
+                                    print(bcolors.FAIL + bcolors.BOLD + "User: " + team + " not in the white list! Score was not updated." + bcolors.ENDC)
+                            else:
+                                if not scores.has_option("TotalScores", team):
+                                    scores.set("TotalScores", team, 0)
+                                currentScore = scores.getint( "TotalScores",team)
+                                scores.set( "TotalScores", team, currentScore+serverAndScore[1])
+                                if not scores.has_option(serverScoresection, team):
+                                    scores.set(serverScoresection, team, 0)
+                                currentScore = scores.getint( serverScoresection,team)
+                                scores.set( serverScoresection, team, currentScore+serverAndScore[1])
             except IOError:
                 response = os.system("ping -c 1 " + server[1] + " > /dev/null 2>&1")
                 if (response == 0):
