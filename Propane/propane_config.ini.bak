@@ -18,10 +18,9 @@ winclient = 192.168.40.131
 winclient = 1234
 
 [WhiteList]
-valera_chmuk
+users = valera_chmuk
 
 [ScoresToAdd]
 192.168.40.131 = 5
-
 
 [BlackList]
