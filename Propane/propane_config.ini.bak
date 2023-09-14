@@ -1,7 +1,7 @@
 [General]
 outfile = /var/www/html/index.html
 outdir = /var/www/html/
-sleeptime = 15
+sleeptime = 15 #Частота обновлений
 whiteListOn = true
 blackListOn = false
 enablePropAcc = false
@@ -12,7 +12,7 @@ starttime =
 endtime = 2:00
 
 [Targets]
-winclient = 192.168.40.131
+winclient = 192.168.40.131 
 
 [PortConfig]
 winclient = 1234

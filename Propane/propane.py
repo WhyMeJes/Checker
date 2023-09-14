@@ -274,7 +274,7 @@ def score(whiteList, blackList):
                     if (enableCustomPorts):
                         for port in portsToCheck:
                             if(port[0] == server[0]):
-                                sock.connect((server[1], port[1]))
+                                sock.connect((server[1], int(port[1])))
                                 break
                             else:
                                 print(server[0] + " good")
