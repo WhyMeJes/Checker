@@ -1,0 +1,55 @@
+<mxfile host="Electron" modified="2023-09-11T11:43:03.628Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.1 Chrome/112.0.5615.87 Electron/24.1.2 Safari/537.36" etag="4t4b2FsWmGXxQzAxWOHJ" version="21.2.1" type="device">
+  <diagram name="Page-1" id="197159a0-c6a4-9194-75a8-e4174976684c">
+    <mxGraphModel dx="4088" dy="2800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1.5" pageWidth="1169" pageHeight="826" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" style=";html=1;" />
+        <mxCell id="1" style=";html=1;" parent="0" />
+        <mxCell id="3RjxJZWrDD2nRyU3UVbv-58" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=4;strokeColor=#FFFFFF;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="895.996666666667" y="780" as="sourcePoint" />
+            <mxPoint x="1351.33" y="546" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="896.33" y="696" />
+              <mxPoint x="1351.33" y="696" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rtncXfGrhfvjsxW5UpP9-4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FFFFFF;strokeWidth=4;" parent="1" source="3RjxJZWrDD2nRyU3UVbv-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="824" y="226.33333333333348" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3RjxJZWrDD2nRyU3UVbv-2" value="&lt;font style=&quot;font-size: 40px;&quot;&gt;&lt;font color=&quot;#ffffff&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend+Exa&quot; style=&quot;font-size: 40px;&quot;&gt;Checker&amp;nbsp;&lt;br style=&quot;font-size: 40px;&quot;&gt;192.168.100.10&lt;/font&gt;&lt;br style=&quot;font-size: 40px;&quot;&gt;&lt;/font&gt;" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#001233;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.esx_esxi;fontFamily=Lexend Exa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DLexend%2BExa;fontSize=40;" parent="1" vertex="1">
+          <mxGeometry x="214" y="55.60000000000002" width="222.73" height="340.8" as="geometry" />
+        </mxCell>
+        <mxCell id="3RjxJZWrDD2nRyU3UVbv-12" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;&lt;font color=&quot;#ffffff&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend+Exa&quot;&gt;VM&lt;br&gt;192.168.100.24&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#001233;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.esx_esxi;fontFamily=Lexend Exa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DLexend%2BExa;" parent="1" vertex="1">
+          <mxGeometry x="1101.32" y="280" width="111.11" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="3RjxJZWrDD2nRyU3UVbv-15" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;&lt;font color=&quot;#ffffff&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend+Exa&quot;&gt;VM&lt;br&gt;192.168.100.25&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#001233;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.esx_esxi;fontFamily=Lexend Exa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DLexend%2BExa;" parent="1" vertex="1">
+          <mxGeometry x="1380.21" y="280" width="111.11" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="3RjxJZWrDD2nRyU3UVbv-16" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;&lt;font color=&quot;#ffffff&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend+Exa&quot;&gt;VM&amp;nbsp;&lt;br&gt;192.168.100.21&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#001233;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.esx_esxi;fontFamily=Lexend Exa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DLexend%2BExa;" parent="1" vertex="1">
+          <mxGeometry x="961.32" y="-50" width="111.11" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="3RjxJZWrDD2nRyU3UVbv-17" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;&lt;font color=&quot;#ffffff&quot;&gt;VM&lt;br&gt;192.168.100.22&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#001233;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.esx_esxi;fontFamily=Lexend Exa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DLexend%2BExa;" parent="1" vertex="1">
+          <mxGeometry x="1231.32" y="-50" width="110.56" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="3RjxJZWrDD2nRyU3UVbv-18" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;&lt;font color=&quot;#ffffff&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Lexend+Exa&quot;&gt;VM&lt;br&gt;192.168.100.23&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#001233;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.2d.esx_esxi;fontFamily=Lexend Exa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DLexend%2BExa;" parent="1" vertex="1">
+          <mxGeometry x="1491.32" y="-50" width="111.11" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="rtncXfGrhfvjsxW5UpP9-1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FFFFFF;strokeWidth=4;" parent="1" source="3RjxJZWrDD2nRyU3UVbv-54" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="325" y="546" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="896" y="698" />
+              <mxPoint x="325" y="698" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3RjxJZWrDD2nRyU3UVbv-54" value="&lt;font color=&quot;#ffffff&quot; style=&quot;font-size: 50px;&quot;&gt;192.168.100.Х/24&lt;/font&gt;" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#001233;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.veeam.laptop;" parent="1" vertex="1">
+          <mxGeometry x="707" y="780" width="377.62" height="284.5" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

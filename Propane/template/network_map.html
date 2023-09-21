@@ -6,7 +6,6 @@
 	<meta http-equiv="refresh" content="30" />
 	<title>Propane Scores</title>
 
-
 	<!-- Bootstrap Core CSS -->
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -68,57 +67,67 @@
 		<!-- /.container -->
 	</nav>
 
-	<div class="intro-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="intro-message">
-                    <img src="sibgu.png" width="150px" height="350px" class="img-responsive center-block">
-                    <h3 id="countdown"></h3>
-                </div>
+
+	<div class="intro-header ">
+		
+			<div class="container ">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="intro-message">
+							<h2>Карта Сети YeniseyCTF 2023</h2>
+						</div>
+					</div>
+				</div>
+			</div>		
+	</div>
+
+	<div class="separator"></div>
+
+	
+
+	<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        
+            <!-- Заголовок модального окна -->
+            <div class="modal-header">
+                <h4 class="modal-title col-lg-12 text-align: center;">Карта Сети YeniseyCTF 2023</h4>
+                <button type="button" class="close button_x" data-dismiss="modal">&times;</button>
             </div>
-            <div class="col-sm-7">
-                <div class="intro-message">
-                    <img src="BI_ZONE.png" width="750px" height="450px" class="img-responsive center-block" >
-                    <h3 id="countdown"></h3>
-                </div>
+            
+            <!-- Содержимое модального окна -->
+            <div class="modal-body">
+                <img src="network_map.png" width="500" height="500" alt="Описание изображения" class="img-fluid">
             </div>
+ 
         </div>
     </div>
 </div>
 
-<div class="separator"></div>
-
 	<div class="content-section-a">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<h2>Scores</h1>
-				<div class="row">
-							<SERVERS>	
-				</div>
-	                        <div class="row">
-					<div class="col-md-12">
-						<TOTAL>
-					</div>
-				</div>
-				</div>
-			</div>
+	<div class="container">
+		<div class="row " >
+			<div class="col-lg-12">
+                <div class="network_map" >
+                	<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal">
+ 					<img src="network_map.png" width="500" height="500" class="btn-blur img-responsive center-block">
+					</button>
+                </div>
+            </div>
 		</div>
 	</div>
-
-<div class="separator"></div>
-
 </div>
+
+
 
 	<!-- jQuery -->
 	<script src="js/jquery.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
-	<script src="countdown.js"></script>
 
 
 </body>
 
 </html>
+

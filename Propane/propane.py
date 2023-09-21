@@ -363,7 +363,7 @@ def reloadScoreBoard(server):
             else:
                 tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>"                
             if((server[0]).title() != "Total" and showTargetIP):
-                    tableResults = tableResults + "<hr style=\"border-top: 1px solid #000;\"/><h4>Server: <span style='color: #1E90FF'>" + server[1]  +"</span></h4>"
+                    tableResults = tableResults + "<hr style=\"border-top: 1px solid #000;\"/><h4>Server: <span style='color: #fff'>" + server[1]  +"</span></h4>"
             tableResults = tableResults + "</center></td></tr>\n"
             serverScores.sort(key=lambda score: -int(score[1]))
             topTagStart="<div class=\"topscore\">"
