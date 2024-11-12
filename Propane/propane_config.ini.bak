@@ -1,5 +1,6 @@
 [General]
 outfile = /var/www/html/index.html
+outfile2 = /var/www/html/scoreboard.html
 outdir = /var/www/html/
 sleeptime = 15
 whiteListOn = true

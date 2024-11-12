@@ -507,10 +507,11 @@ def main():
                 if endTime and not gameSetup:
                     getEndTime(gameSetup)
                 # Open template file
-                templateFile = open("template/template.html", 'r')
+                templateFile = open("template/scoreboard.html", 'r')
+                serversFile = open("template/template.html", 'r')
                 # Read in template file
                 scorePage = templateFile.read()
-         
+                serversPage = serversFile.read()
                 # Load up the white list
                 whiteList = ""
 
@@ -588,7 +589,7 @@ def main():
                 thisTable = reloadScoreBoard(["Total",""])
                 serverLabelTag=("<TOTAL>").upper()
                 print(bcolors.GREEN + bcolors.BOLD + "Updating " + bcolors.ENDC + bcolors.BOLD + serverLabelTag + bcolors.ENDC + " tag in the template")
-                scorePage = scorePage.replace(serverLabelTag,thisTable)
+                serversPage = serversPage.replace(serverLabelTag,thisTable)
                 # Write out the updates made to the Scoreboard and get ready for next interval
                 print(bcolors.BLUE + bcolors.BOLD + "Updating Scoreboard " + bcolors.ENDC + bcolors.BOLD + outfile + bcolors.ENDC)
                 outFileHandler = open(outfile, 'w')
@@ -596,7 +597,7 @@ def main():
                 outFileHandler.close()
                 print(bcolors.BLUE + bcolors.BOLD + "Updating Scoreboard " + bcolors.ENDC + bcolors.BOLD + outfile2 + bcolors.ENDC)
                 outFileHandler = open(outfile2, 'w')
-                outFileHandler.write(scorePage)
+                outFileHandler.write(serversPage)
                 outFileHandler.close()
                 print(bcolors.CYAN + bcolors.BOLD + "Next update in: " + bcolors.ENDC + str(sleepTime) + bcolors.BOLD + " second(s)" + bcolors.ENDC)
                 time.sleep(sleepTime)
