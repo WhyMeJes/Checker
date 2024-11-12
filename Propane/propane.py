@@ -24,7 +24,7 @@ import configparser
 import time
 import os
 import csv
-import imp
+#import imp
 from datetime import datetime
 from threading import Timer
 import socket
@@ -145,7 +145,7 @@ loadPropAcc():
 
 '''
 def loadPropAcc():
-    
+
     propaccs = []
     possibleplugins = os.listdir(PropAccDir)
     for i in possibleplugins:

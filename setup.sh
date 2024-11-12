@@ -52,6 +52,8 @@ echo "Restoring backup if it exists..."
 cp Propane/propane_config.ini.bak Propane/propane_config.ini
 echo "Making backup of propane_config.ini"
 cp Propane/propane_config.ini Propane/propane_config.ini.bak
+echo "Enabling Apache2"
+service apache2 start
 echo "Setting install dir in propane_config.ini"
 sed -i "s|changeme/|/var/www/html/|" Propane/propane_config.ini  
 echo "Moving propane files to specified webroot up one dir"
