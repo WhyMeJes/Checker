@@ -82,6 +82,7 @@ whiteListInit = ""
 blackListInit = ""
 sleepTime = ""
 outfile = ""
+outfile2 = ""
 outdir = ""
 startTime = ""
 endTime = ""
@@ -113,7 +114,7 @@ def loadConfig():
 
         print(bcolors.CYAN + bcolors.BOLD + "Loading Configurations" + bcolors.ENDC)
         
-        global configFile, serversToCheck,scoresToAdd, whiteListInit, blackListInit, sleepTime, outfile, outdir, startTime, endTime, whiteListIsOn, blackListIsOn, enablePropAcc, showTargetIP, enableCustomPorts, portsToCheck, enableBackUp
+        global configFile, serversToCheck,scoresToAdd, whiteListInit, blackListInit, sleepTime, outfile, outfile2, outdir, startTime, endTime, whiteListIsOn, blackListIsOn, enablePropAcc, showTargetIP, enableCustomPorts, portsToCheck, enableBackUp
         
         # Clear the config before we reload it so we don't get list memory conflict hell
         config.clear()
@@ -125,6 +126,7 @@ def loadConfig():
         blackListInit = config.items("BlackList")
         sleepTime = config.getint("General", "sleeptime")
         outfile = config.get("General", "outfile")
+        outfile2 = config.get("General", "outfile2")
         outdir = config.get("General", "outdir")
         enableBackUp = config.getboolean("General", "enableBackUp")
         startTime = config.get("General", "starttime")
@@ -590,6 +592,10 @@ def main():
                 # Write out the updates made to the Scoreboard and get ready for next interval
                 print(bcolors.BLUE + bcolors.BOLD + "Updating Scoreboard " + bcolors.ENDC + bcolors.BOLD + outfile + bcolors.ENDC)
                 outFileHandler = open(outfile, 'w')
+                outFileHandler.write(scorePage)
+                outFileHandler.close()
+                print(bcolors.BLUE + bcolors.BOLD + "Updating Scoreboard " + bcolors.ENDC + bcolors.BOLD + outfile2 + bcolors.ENDC)
+                outFileHandler = open(outfile2, 'w')
                 outFileHandler.write(scorePage)
                 outFileHandler.close()
                 print(bcolors.CYAN + bcolors.BOLD + "Next update in: " + bcolors.ENDC + str(sleepTime) + bcolors.BOLD + " second(s)" + bcolors.ENDC)
