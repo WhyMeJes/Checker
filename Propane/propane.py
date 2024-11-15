@@ -423,11 +423,11 @@ def getEndTime(gameSetup):
 
                         
                         
-                         display.textContent = "Time Remaining: " + hours + ":" + minutes + ":" + seconds;
+                         display.textContent = "Осталось времени: " + hours + ":" + minutes + ":" + seconds;
                         
                         if(hours <= 0){
                             if(minutes <= 9){
-                                display.textContent = "FINAL COUTDOWN: " + hours + ":" + minutes + ":" + seconds;
+                                display.textContent = "Осталось времени: " + hours + ":" + minutes + ":" + seconds;
                                 display.style.color = "red";
                             }else if(minutes >= 10 && minutes <= 30){
                                 display.style.color = "orange";
