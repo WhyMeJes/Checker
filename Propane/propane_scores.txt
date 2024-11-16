@@ -1,2 +1,1 @@
 [TotalScores]
-a = 200
