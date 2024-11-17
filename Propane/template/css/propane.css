@@ -3,6 +3,11 @@
  * Copyright 2013-2016 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
+ @font-face {
+  font-weight: 300;
+  font-family: Roboto;
+  src: url("../fonts/Cyberpunk.ttf");
+}
 
 body, html {
   width: 100%;
@@ -10,7 +15,8 @@ body, html {
 }
 
 body, h1, h2, h3, h4, h5, h6 {
-  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  font-family: Arial;
   font-weight: 700;
 }
 
@@ -96,7 +102,9 @@ body, h1, h2, h3, h4, h5, h6 {
 }
 
 .intro-message>h3 {
-  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.6);
+   color: #fff; /* Цвет текста */
+  -webkit-text-stroke: 1px #000000; /* Толщина и цвет обводки */
+  font-size:30px;
 }
 
 @media(max-width:767px) {
