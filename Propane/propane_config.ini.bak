@@ -13,7 +13,7 @@ starttime =
 endtime = 2:00
 
 [Targets]
-Debian = 192.168.1.76
+Debian = 192.168.1.74
 
 [PortConfig]
 Debian = 80
@@ -22,13 +22,13 @@ Debian = 80
 users = user_name
 
 [ScoresToAdd]
-192.168.172.119 = 5
+192.168.1.74 = 5
 
 [BlackList]
 
 [PostgresConf]
 PostgresEnabled = True
-PostgresAddress = 192.168.172.120
+PostgresAddress = 192.168.1.73
 PostgresPort = 5432
 PostgresLogin = admin
 PostgresPass = admin

@@ -351,13 +351,13 @@ def score(whiteList, blackList):
                                 sock.connect((server[1], int(port[1])))
                                 break
                             else:
-                                print(server[0] + " good")
+                                print(server[0] + " работает")
                                 break
                     else:
                         sock.connect((server[1], 80))
-                    print(bcolors.GREEN + bcolors.BOLD + "Web service for: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.GREEN + bcolors.BOLD + " is up!" + bcolors.ENDC)
+                    print(bcolors.GREEN + bcolors.BOLD + "Веб сервис на машине: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.GREEN + bcolors.BOLD + " работает!" + bcolors.ENDC)
                 except socket.error as e:
-                    print(bcolors.FAIL + bcolors.BOLD + server[0] + bcolors.ENDC + " @ " + bcolors.FAIL + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.FAIL + bcolors.BOLD + " web service is down, you may want to check it!" + bcolors.ENDC)
+                    print(bcolors.FAIL + bcolors.BOLD + server[0] + bcolors.ENDC + " @ " + bcolors.FAIL + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.FAIL + bcolors.BOLD + " Веб сервис не работает" + bcolors.ENDC)
                 sock.close()
             except AttributeError:
                 print(bcolors.BOLD + "Server " + bcolors.RED + server[0] + bcolors.ENDC + " is not officially " + bcolors.RED + "pwned " + bcolors.ENDC + "yet")
