@@ -1,1 +1,3 @@
 [TotalScores]
+hehe = 1000
+nothehe = 1000

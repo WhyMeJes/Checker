@@ -29,6 +29,8 @@ from datetime import datetime
 from threading import Timer
 import socket
 from shutil import copyfile, copytree
+import psycopg2
+from psycopg2 import Error
 
 
 # Colors for terminal output. Makes things pretty.
@@ -43,9 +45,6 @@ class bcolors:
     BGRED = '\033[41m'
     WHITE = '\033[37m'
     CYAN = '\033[36m'
-
-
-
 
 '''
 Globals:
@@ -144,12 +143,71 @@ def loadConfig():
         PostgresPass = config.get("PostgresConf", "PostgresPass")
         PostgresScore = config.get("PostgresConf", "PostgresScore")
 
-def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore):
-    if PostgresEnabled == True:
-        print(f"Postgres работает по адресу{PostgresAddress}:{PostgresPort}")
+def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore, whiteList, blackList):
+    if PostgresEnabled == "True":
+        try:
+            # Устанавливаем соединение
+            connection = psycopg2.connect(
+                host=PostgresAddress,
+                port=PostgresPort,
+                database="postgres",
+                user=PostgresLogin,
+                password=PostgresPass
+            )
+            # Создаем курсор
+            cursor = connection.cursor()
 
+            # Выполняем запрос
+            query = "SELECT apt FROM apts"
+            cursor.execute(query)
 
+            # Получаем результаты
+            apt_values = [row[0] for row in cursor.fetchall()]
+            #print(type(apt_values))
+            apt_values = list(set(apt_values)) # Оставляем только уникальные команды
+            for teams in apt_values:
+                teams = teams.replace("_", " ").title().replace(" ", "_")
+                if whiteListIsOn and not blackListIsOn:
+                    if teams in whiteList:
+                        if not scores.has_option("TotalScores", teams):
+                            scores.set("TotalScores", teams, 0)
+                        currentScore = scores.getint("TotalScores", teams)
+                        scores.set("TotalScores", teams, currentScore + int(PostgresScore))
+                    else:
+                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
+                elif blackListIsOn and not whiteListIsOn:
+                    if teams in blackList:
+                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
+                    else:
+                        if not scores.has_option("TotalScores", teams):
+                            scores.set("TotalScores", teams, 0)
+                        currentScore = scores.getint("TotalScores", teams)
+                        scores.set("TotalScores", teams, currentScore + int(PostgresScore))
+                elif whiteListIsOn and blackListIsOn:
+                    if teams in blackList:
+                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
+                    elif teams in whiteList:
+                        if not scores.has_option("TotalScores", teams):
+                            scores.set("TotalScores", teams, 0)
+                        currentScore = scores.getint("TotalScores", teams)
+                        scores.set("TotalScores", teams, currentScore + int(PostgresScore))
+                    else:
+                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
+                else:
+                    if not scores.has_option("TotalScores", teams):
+                        scores.set("TotalScores", teams, 0)
+                    currentScore = scores.getint("TotalScores", teams)
+                    scores.set("TotalScores", teams, currentScore + int(PostgresScore))
+        except (Exception, Error) as error:
+            print(f"Ошибка при выполнении запроса: {error}")
+            return None
 
+        finally:
+            # Закрываем курсор и соединение
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
 
 '''
 loadPropAcc():
@@ -217,6 +275,7 @@ def score(whiteList, blackList):
                     for port in portsToCheck:
                         if(port[0] == server[0]):
                             serverURL = serverURL + ":" + port[1]
+                print(CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore, whiteList, blackList))
                 print(bcolors.GREEN + bcolors.BOLD + "Проверяем машину: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC)
                 url = urllib.request.urlopen(serverURL,None,10)
                 html = url.read()
@@ -612,9 +671,11 @@ def main():
                 outFileHandler = open(outfile2, 'w')
                 outFileHandler.write(serversPage)
                 outFileHandler.close()
+                print(PostgresEnabled)
+
                 print(bcolors.CYAN + bcolors.BOLD + "Следующее обновление через: " + bcolors.ENDC + str(sleepTime) + bcolors.BOLD + " секунд" + bcolors.ENDC)
                 time.sleep(sleepTime)
-                CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore)
+
 
 
 #Execute main()
@@ -633,8 +694,8 @@ if __name__ == "__main__":
     main()
 
 
-#TODO Новые поля в конфиге: Включён ли модуль (Тру фолс), Адрес постгреса, порт для него, логин, пароль, количество очков которые будут сниматься
-#TODO Через SQLAlchemy чекаем таблицу apts, получаем названия команд которые там содержатся
+#TODO Новые поля в конфиге: Включён ли модуль (Тру фолс), Адрес постгреса, порт для него, логин, пароль, количество очков которые будут сниматься DONE
+#TODO Через SQLAlchemy чекаем таблицу apts, получаем названия команд которые там содержатся DONE
 #TODO Смотрим находятся ли они в вайтлиисте, убираем повторы
 #TODO После этого минусуем им баллы, сделать ли это всё отдельной функцией
 #TODO Вывод постгреса на веб
