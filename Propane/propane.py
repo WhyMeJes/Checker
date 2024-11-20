@@ -114,7 +114,7 @@ def loadConfig():
 
         print(bcolors.CYAN + bcolors.BOLD + "Loading Configurations" + bcolors.ENDC)
         
-        global configFile, serversToCheck,scoresToAdd, whiteListInit, blackListInit, sleepTime, outfile, outfile2, outdir, startTime, endTime, whiteListIsOn, blackListIsOn, enablePropAcc, showTargetIP, enableCustomPorts, portsToCheck, enableBackUp
+        global configFile, serversToCheck,scoresToAdd, whiteListInit, blackListInit, sleepTime, outfile, outfile2, outdir, startTime, endTime, whiteListIsOn, blackListIsOn, enablePropAcc, showTargetIP, enableCustomPorts, portsToCheck, enableBackUp, PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore
         
         # Clear the config before we reload it so we don't get list memory conflict hell
         config.clear()
@@ -137,6 +137,16 @@ def loadConfig():
         showTargetIP = config.getboolean("General", "showTargetIP")
         enableCustomPorts = config.getboolean("General", "enableCustomPorts")
         portsToCheck = config.items("PortConfig")
+        PostgresEnabled = config.get("PostgresConf", "PostgresEnabled")
+        PostgresAddress = config.get("PostgresConf", "PostgresAddress")
+        PostgresPort = config.get("PostgresConf", "PostgresPort")
+        PostgresLogin = config.get("PostgresConf", "PostgresLogin")
+        PostgresPass = config.get("PostgresConf", "PostgresPass")
+        PostgresScore = config.get("PostgresConf", "PostgresScore")
+
+def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore):
+    if PostgresEnabled == True:
+        print(f"Postgres работает по адресу{PostgresAddress}:{PostgresPort}")
 
 
 
@@ -207,7 +217,7 @@ def score(whiteList, blackList):
                     for port in portsToCheck:
                         if(port[0] == server[0]):
                             serverURL = serverURL + ":" + port[1]
-                print(bcolors.GREEN + bcolors.BOLD + "Checking Server: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC)
+                print(bcolors.GREEN + bcolors.BOLD + "Проверяем машину: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC)
                 url = urllib.request.urlopen(serverURL,None,10)
                 html = url.read()
                 pattern = r'<team>(.*?)</team>'
@@ -231,10 +241,10 @@ def score(whiteList, blackList):
                                         currentScore = scores.getint( serverScoresection,teams)
                                         scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
                                     else:
-                                        print(bcolors.FAIL + bcolors.BOLD + "User: " + teams + " not in the white list! Score was not updated." + bcolors.ENDC)
+                                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
                                 elif blackListIsOn and not whiteListIsOn:
                                     if teams in blackList:
-                                        print(bcolors.FAIL + bcolors.BOLD + "User: " + teams + " is in the black list! Score was not updated." + bcolors.ENDC)
+                                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
                                     else:
                                         if not scores.has_option("TotalScores", teams):
                                             scores.set("TotalScores", teams, 0)
@@ -246,7 +256,7 @@ def score(whiteList, blackList):
                                         scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
                                 elif whiteListIsOn and blackListIsOn:
                                     if teams in blackList:
-                                        print(bcolors.FAIL + bcolors.BOLD + "User: " + teams + " is in the black list! Score was not updated." + bcolors.ENDC)
+                                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
                                     elif teams in whiteList:
                                         if not scores.has_option("TotalScores", teams):
                                             scores.set("TotalScores", teams, 0)
@@ -257,7 +267,7 @@ def score(whiteList, blackList):
                                         currentScore = scores.getint( serverScoresection,teams)
                                         scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
                                     else:
-                                        print(bcolors.FAIL + bcolors.BOLD + "User: " + teams + " not in the white list! Score was not updated." + bcolors.ENDC)
+                                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
                                 else:
                                     if not scores.has_option("TotalScores", teams):
                                         scores.set("TotalScores", teams, 0)
@@ -270,9 +280,9 @@ def score(whiteList, blackList):
             except IOError:
                 response = os.system("ping -c 1 " + server[1] + " > /dev/null 2>&1")
                 if (response == 0):
-                    print(bcolors.GREEN + bcolors.BOLD + "Host for: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.GREEN + bcolors.BOLD + " is up!" + bcolors.ENDC) 
+                    print(bcolors.GREEN + bcolors.BOLD + "Машина по адресу: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.GREEN + bcolors.BOLD + " работает!" + bcolors.ENDC)
                 else:
-                    print(bcolors.FAIL + bcolors.BOLD + server[0] + bcolors.ENDC + " @ " + bcolors.FAIL + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.FAIL + bcolors.BOLD + " host is down, you may want to check it!" + bcolors.ENDC)
+                    print(bcolors.FAIL + bcolors.BOLD + server[0] + bcolors.ENDC + " @ " + bcolors.FAIL + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.FAIL + bcolors.BOLD + " машина не работает!" + bcolors.ENDC)
 
                 try:
                     sock.settimeout(5)
@@ -328,7 +338,7 @@ reloadScoreBoard():
 
 
 def reloadScoreBoard(server):
-        print(bcolors.BLUE + bcolors.BOLD + "Reloading Scoreboard for: " + bcolors.ENDC + bcolors.BOLD + server[0] + bcolors.ENDC)
+        print(bcolors.BLUE + bcolors.BOLD + "Обновляем таблицу очков для: " + bcolors.ENDC + bcolors.BOLD + server[0] + bcolors.ENDC)
         try:
 
             serverScoresection = server[0]+"Scores"
@@ -402,14 +412,14 @@ def getEndTime(gameSetup):
     
         endMinute = int(endTime.split(":")[1])
     except:
-        print(bcolors.FAIL + "The endtime in your config doesn't look like a valid 24 hour time format..." + bcolors.ENDC)
+        print(bcolors.FAIL + "Странный формат времени у окончания соревнований, нужен 24 часовой формат" + bcolors.ENDC)
     formattedEndTime = currentTime.replace(day=currentTime.day, hour=endHour, minute=endMinute, microsecond=currentTime.microsecond)
 
     timeDelta = formattedEndTime - currentTime
 
     if gameSetup:
         endTimer = Timer(timeDelta.seconds, endGame)
-        print(bcolors.YELLOW + bcolors.BOLD + "Propane will end at: " + str(formattedEndTime) + bcolors.ENDC)
+        print(bcolors.YELLOW + bcolors.BOLD + "Соревнования закончатся в: " + str(formattedEndTime) + bcolors.ENDC)
         endTimer.start()
 
     timerJS = """
@@ -467,7 +477,7 @@ endGame():
 
 def endGame():
 
-    print(bcolors.YELLOW + bcolors.BOLD + "Propane has ended at: " + str(datetime.now()) + bcolors.ENDC)
+    print(bcolors.YELLOW + bcolors.BOLD + "Соревнования заканчивается в: " + str(datetime.now()) + bcolors.ENDC)
 
     os._exit(0)
 
@@ -534,7 +544,7 @@ def main():
 
                 # Do one-time set up stuff on start of the game
                 if(gameSetup):
-                        print(bcolors.CYAN + bcolors.BOLD + "Game Setup: " + bcolors.ENDC + " copying template files")
+                        print(bcolors.CYAN + bcolors.BOLD + "Настройка игры: " + bcolors.ENDC + " копирование шаблонных файлов")
                         copytree("template", outdir, dirs_exist_ok=True)
                         os.remove(outdir + "template.html")
 
@@ -545,13 +555,13 @@ def main():
                                 startHour = int(startTime.split(":")[0])
                                 startMinute = int(startTime.split(":")[1])
                             except ValueError:
-                                print(bcolors.FAIL + "The starttime in your config doesn't look like a valid 24 hour time format..." + bcolors.ENDC)
+                                print(bcolors.FAIL + "Какой-то странный формат времени..." + bcolors.ENDC)
                         
                             formattedStartTime = currentTime.replace(day=currentTime.day, hour=startHour, minute=startMinute, microsecond=currentTime.microsecond)
 
                             timeDelta = formattedStartTime - currentTime
 
-                            print(bcolors.GREEN + bcolors.BOLD + "Propane will start at: " + str(formattedStartTime) + bcolors.ENDC)
+                            print(bcolors.GREEN + bcolors.BOLD + "Соревнования начнутся в: " + str(formattedStartTime) + bcolors.ENDC)
                             time.sleep(timeDelta.seconds)
 
                         if endTime:
@@ -577,7 +587,7 @@ def main():
                 for server in serversToCheck:
                     thisTable = reloadScoreBoard(server)
                     # Append host to list of host and wrap it in a div container that will manage the layout
-                    print(bcolors.GREEN + bcolors.BOLD + "Updating " + bcolors.ENDC + bcolors.BOLD + server[0] + bcolors.ENDC + " tag in the template")
+                    print(bcolors.GREEN + bcolors.BOLD + "Обновляем " + bcolors.ENDC + bcolors.BOLD + server[0] + bcolors.ENDC + " тэг в шаблоне")
                     allHosts.append("<div class='col-md-3 col-xs-6'>" + thisTable + "</div>")
                 # Defined a string that will append all the dynamically generated target HTML data and convert it to a string as it iterates each host.
                 hostTemplateString = ""
@@ -585,25 +595,26 @@ def main():
                     hostTemplateString += host
                 # Grab the <SERVERS> tag to replace in the template.
                 serverLabelTag="<SERVERS>"
-                print(bcolors.GREEN + bcolors.BOLD + "Updating " + bcolors.ENDC + bcolors.BOLD + serverLabelTag + bcolors.ENDC + " tag in the template")
+                print(bcolors.GREEN + bcolors.BOLD + "Обновляем " + bcolors.ENDC + bcolors.BOLD + serverLabelTag + bcolors.ENDC + " тэг в шаблоне")
                 # Replace <SERVERS> with the generated targets string.
                 scorePage = scorePage.replace(serverLabelTag,hostTemplateString)
                 # Update Total Scores on Scoreboard
                 thisTable = reloadScoreBoard(["Total",""])
                 serverLabelTag=("<TOTAL>").upper()
-                print(bcolors.GREEN + bcolors.BOLD + "Updating " + bcolors.ENDC + bcolors.BOLD + serverLabelTag + bcolors.ENDC + " tag in the template")
+                print(bcolors.GREEN + bcolors.BOLD + "Обновляем " + bcolors.ENDC + bcolors.BOLD + serverLabelTag + bcolors.ENDC + " тэг в шаблоне")
                 serversPage = serversPage.replace(serverLabelTag,thisTable)
                 # Write out the updates made to the Scoreboard and get ready for next interval
-                print(bcolors.BLUE + bcolors.BOLD + "Updating Scoreboard " + bcolors.ENDC + bcolors.BOLD + outfile + bcolors.ENDC)
+                print(bcolors.BLUE + bcolors.BOLD + "Обновляем таблицу очков " + bcolors.ENDC + bcolors.BOLD + outfile + bcolors.ENDC)
                 outFileHandler = open(outfile, 'w')
                 outFileHandler.write(scorePage)
                 outFileHandler.close()
-                print(bcolors.BLUE + bcolors.BOLD + "Updating Scoreboard " + bcolors.ENDC + bcolors.BOLD + outfile2 + bcolors.ENDC)
+                print(bcolors.BLUE + bcolors.BOLD + "Обновляем таблицу очков " + bcolors.ENDC + bcolors.BOLD + outfile2 + bcolors.ENDC)
                 outFileHandler = open(outfile2, 'w')
                 outFileHandler.write(serversPage)
                 outFileHandler.close()
-                print(bcolors.CYAN + bcolors.BOLD + "Next update in: " + bcolors.ENDC + str(sleepTime) + bcolors.BOLD + " second(s)" + bcolors.ENDC)
+                print(bcolors.CYAN + bcolors.BOLD + "Следующее обновление через: " + bcolors.ENDC + str(sleepTime) + bcolors.BOLD + " секунд" + bcolors.ENDC)
                 time.sleep(sleepTime)
+                CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore)
 
 
 #Execute main()
@@ -620,3 +631,10 @@ if __name__ == "__main__":
     print(bcolors.CYAN + bcolors.BOLD + ascii_art + bcolors.ENDC)
 
     main()
+
+
+#TODO Новые поля в конфиге: Включён ли модуль (Тру фолс), Адрес постгреса, порт для него, логин, пароль, количество очков которые будут сниматься
+#TODO Через SQLAlchemy чекаем таблицу apts, получаем названия команд которые там содержатся
+#TODO Смотрим находятся ли они в вайтлиисте, убираем повторы
+#TODO После этого минусуем им баллы, сделать ли это всё отдельной функцией
+#TODO Вывод постгреса на веб

@@ -25,3 +25,11 @@ users = user_name
 192.168.1.76 = 5
 
 [BlackList]
+
+[PostgresConf]
+PostgresEnabled = True
+PostgresAddress = 192.168.0.1
+PostgresPort = 5432
+PostgresLogin = admin
+PostgresPass = admin
+PostgresScore = 5
