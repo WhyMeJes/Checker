@@ -89,7 +89,7 @@ gameSetup = True
 PropAccDir = "./PropAcc"
 PropAccModule = "__init__"
 portsToCheck = ""
-
+PostgresIsWorking = False
 '''
 loadConfig():
     Loads and parses the propane_config file.
@@ -117,7 +117,6 @@ def loadConfig():
         
         # Clear the config before we reload it so we don't get list memory conflict hell
         config.clear()
-
         configFile = config.read("propane_config.ini")
         serversToCheck = config.items("Targets")
         scoresToAdd = config.items("ScoresToAdd")
@@ -143,6 +142,7 @@ def loadConfig():
         PostgresPass = config.get("PostgresConf", "PostgresPass")
         PostgresScore = config.get("PostgresConf", "PostgresScore")
 
+
 def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore, whiteList, blackList):
     if PostgresEnabled == "True":
         try:
@@ -156,7 +156,8 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
             )
             # Создаем курсор
             cursor = connection.cursor()
-
+            global PostgresIsWorking
+            PostgresIsWorking = True
             # Выполняем запрос
             query = "SELECT apt FROM apts"
             cursor.execute(query)
@@ -165,6 +166,8 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
             apt_values = [row[0] for row in cursor.fetchall()]
             #print(type(apt_values))
             apt_values = list(set(apt_values)) # Оставляем только уникальные команды
+            cursor.close()
+            connection.close()
             for teams in apt_values:
                 teams = teams.replace("_", " ").title().replace(" ", "_")
                 if whiteListIsOn and not blackListIsOn:
@@ -200,15 +203,8 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
                     scores.set("TotalScores", teams, currentScore + int(PostgresScore))
         except (Exception, Error) as error:
             print(f"Ошибка при выполнении запроса: {error}")
+            PostgresIsWorking = False
             return None
-
-        finally:
-            # Закрываем курсор и соединение
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
-
 '''
 loadPropAcc():
     Imports all modules in the PropAcc Directory and returns a list of them to be initialized
@@ -360,7 +356,7 @@ def score(whiteList, blackList):
                     print(bcolors.FAIL + bcolors.BOLD + server[0] + bcolors.ENDC + " @ " + bcolors.FAIL + bcolors.BOLD + server[1] + bcolors.ENDC + bcolors.FAIL + bcolors.BOLD + " Веб сервис не работает" + bcolors.ENDC)
                 sock.close()
             except AttributeError:
-                print(bcolors.BOLD + "Server " + bcolors.RED + server[0] + bcolors.ENDC + " is not officially " + bcolors.RED + "pwned " + bcolors.ENDC + "yet")
+                print(bcolors.BOLD + "Машина " + bcolors.RED + server[0] + bcolors.ENDC + " ещё не " + bcolors.RED + "взломана " + bcolors.ENDC + "yet")
         with open("propane_scores.txt", 'w') as scoresFile:
                 scores.write(scoresFile)
         # If backups are are on, make a back up!
@@ -398,6 +394,7 @@ reloadScoreBoard():
 
 def reloadScoreBoard(server):
         print(bcolors.BLUE + bcolors.BOLD + "Обновляем таблицу очков для: " + bcolors.ENDC + bcolors.BOLD + server[0] + bcolors.ENDC)
+
         try:
 
             serverScoresection = server[0]+"Scores"
@@ -421,36 +418,70 @@ def reloadScoreBoard(server):
                 webServerStatus = False
             sock.close()
 
-            tableResults = "<div class=\"col-md-12\" id=\"" + server[0] + "\">"
-            tableResults = tableResults + "<table class=\"table\" border=\"2\">\n<tr>"
-            if (serverStatus and (server[0]).title() != "Total"):
-                if (webServerStatus):
-                        tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>Машина: <span style='color:green'>Работает</span><br><br>Веб-сервис: <span style='color:green'>Работает</span><br>"
-                else:
-                    tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>Машина: <span style='color:green'>Работает</span><br><br>Веб-сервис: <span style='color:red'>Не работает</span><br>"
-            elif (not serverStatus and (server[0]).title() != "Total"):
-                if(webServerStatus):
-                    tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>Машина: <span style='color:red'>Не работает</span><br><br>Веб-сервис: <span style='color:green'>Работает</span><br>"
-                else:
-                    tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>Машина: <span style='color:red'>Не работает</span><br><br>Веб-сервис: <span style='color:red'>Не работает</span><br>"
+            if server[0] == "postgres":
+                tableResults = "<div class=\"col-md-12\" id=\"" + server[0] + "\">"
+                tableResults = tableResults + "<table class=\"table\" border=\"2\">\n<tr>"
+                if (serverStatus and (server[0]).title() != "Total"):
+                    if (PostgresIsWorking):
+                        tableResults = tableResults + "<td colspan=\"2\"><center><h3>" + (server[
+                            0]).title() + "</h3><br>Машина: <span style='color:green'>Работает</span><br><br>PostgreSQL: <span style='color:green'>Работает</span><br>"
+                    else:
+                        tableResults = tableResults + "<td colspan=\"2\"><center><h3>" + (server[
+                            0]).title() + "</h3><br>Машина: <span style='color:green'>Работает</span><br><br>PostgreSQL: <span style='color:red'>Не работает</span><br>"
+                elif (not serverStatus and (server[0]).title() != "Total"):
+                    if (PostgresIsWorking):
+                        tableResults = tableResults + "<td colspan=\"2\"><center><h3>" + (server[
+                            0]).title() + "</h3><br>Машина: <span style='color:red'>Не работает</span><br><br>PostgreSQL: <span style='color:green'>Работает</span><br>"
+                    else:
+                        tableResults = tableResults + "<td colspan=\"2\"><center><h3>" + (server[
+                            0]).title() + "</h3><br>Машина: <span style='color:red'>Не работает</span><br><br>PostgreSQL: <span style='color:red'>Не работает</span><br>"
 
+                else:
+                    tableResults = tableResults + "<td colspan=\"2\"><center><h3>" + (server[0]).title() + "</h3><br>"
+                if ((server[0]).title() != "Total" and showTargetIP):
+                    tableResults = tableResults + "<hr style=\"border-top: 1px solid #000;\"/><h4>Адрес: <span style='color: #fff'>" + \
+                                   server[1] + "</span></h4>"
+                tableResults = tableResults + "</center></td></tr>\n"
+                serverScores.sort(key=lambda score: -int(score[1]))
+                topTagStart = "<div class=\"topscore\">"
+                topTagEnd = "</div>"
+                for team in serverScores:
+                    tableResults = tableResults + "<tr><td>" + topTagStart + team[
+                        0].title() + topTagEnd + "</td><td>" + topTagStart + str(team[1]) + topTagEnd + "</td></tr>\n"
+                    topTagStart = "<div class=\"otherscore\">"
+                    topTagEnd = "</div>"
+                tableResults = tableResults + "</table></div>"
+                return tableResults
             else:
-                tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>"                
-            if((server[0]).title() != "Total" and showTargetIP):
-                    tableResults = tableResults + "<hr style=\"border-top: 1px solid #000;\"/><h4>Адрес: <span style='color: #fff'>" + server[1]  +"</span></h4>"
-            tableResults = tableResults + "</center></td></tr>\n"
-            serverScores.sort(key=lambda score: -int(score[1]))
-            topTagStart="<div class=\"topscore\">"
-            topTagEnd="</div>"
-            for team in serverScores:
-                tableResults = tableResults + "<tr><td>" + topTagStart + team[0].title() + topTagEnd + "</td><td>" + topTagStart + str(team[1]) +  topTagEnd  + "</td></tr>\n"
-                topTagStart="<div class=\"otherscore\">"
-                topTagEnd="</div>"
-            tableResults = tableResults + "</table></div>"
-            return tableResults
-        except:
-            print(bcolors.FAIL + bcolors.BOLD + "No section for " + server[0] + " (check your template for errors)" + bcolors.ENDC)
+                tableResults = "<div class=\"col-md-12\" id=\"" + server[0] + "\">"
+                tableResults = tableResults + "<table class=\"table\" border=\"2\">\n<tr>"
+                if (serverStatus and (server[0]).title() != "Total"):
+                    if (webServerStatus):
+                            tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>Машина: <span style='color:green'>Работает</span><br><br>Веб-сервис: <span style='color:green'>Работает</span><br>"
+                    else:
+                        tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>Машина: <span style='color:green'>Работает</span><br><br>Веб-сервис: <span style='color:red'>Не работает</span><br>"
+                elif (not serverStatus and (server[0]).title() != "Total"):
+                    if(webServerStatus):
+                        tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>Машина: <span style='color:red'>Не работает</span><br><br>Веб-сервис: <span style='color:green'>Работает</span><br>"
+                    else:
+                        tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>Машина: <span style='color:red'>Не работает</span><br><br>Веб-сервис: <span style='color:red'>Не работает</span><br>"
 
+                else:
+                    tableResults = tableResults + "<td colspan=\"2\"><center><h3>" +(server[0]).title() + "</h3><br>"
+                if((server[0]).title() != "Total" and showTargetIP):
+                        tableResults = tableResults + "<hr style=\"border-top: 1px solid #000;\"/><h4>Адрес: <span style='color: #fff'>" + server[1]  +"</span></h4>"
+                tableResults = tableResults + "</center></td></tr>\n"
+                serverScores.sort(key=lambda score: -int(score[1]))
+                topTagStart="<div class=\"topscore\">"
+                topTagEnd="</div>"
+                for team in serverScores:
+                    tableResults = tableResults + "<tr><td>" + topTagStart + team[0].title() + topTagEnd + "</td><td>" + topTagStart + str(team[1]) +  topTagEnd  + "</td></tr>\n"
+                    topTagStart="<div class=\"otherscore\">"
+                    topTagEnd="</div>"
+                tableResults = tableResults + "</table></div>"
+                return tableResults
+        except:
+            print(bcolors.FAIL + bcolors.BOLD + "Нет секции для " + server[0] + " (ошибки в шаблоне?)" + bcolors.ENDC)
 
 '''
 getEndTime():
