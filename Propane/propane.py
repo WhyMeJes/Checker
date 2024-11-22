@@ -168,6 +168,7 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
             apt_values = list(set(apt_values)) # Оставляем только уникальные команды
             cursor.close()
             connection.close()
+            serverScoresection = "postgresScores"
             for teams in apt_values:
                 teams = teams.replace("_", " ").title().replace(" ", "_")
                 if whiteListIsOn and not blackListIsOn:
@@ -176,6 +177,10 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
                             scores.set("TotalScores", teams, 0)
                         currentScore = scores.getint("TotalScores", teams)
                         scores.set("TotalScores", teams, currentScore + int(PostgresScore))
+                        if not scores.has_option(serverScoresection, teams):
+                            scores.set(serverScoresection, teams, 0)
+                        currentScore = scores.getint(serverScoresection, teams)
+                        scores.set(serverScoresection, teams, currentScore + int(PostgresScore))
                     else:
                         print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
                 elif blackListIsOn and not whiteListIsOn:
@@ -186,6 +191,10 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
                             scores.set("TotalScores", teams, 0)
                         currentScore = scores.getint("TotalScores", teams)
                         scores.set("TotalScores", teams, currentScore + int(PostgresScore))
+                        if not scores.has_option(serverScoresection, teams):
+                            scores.set(serverScoresection, teams, 0)
+                        currentScore = scores.getint(serverScoresection, teams)
+                        scores.set(serverScoresection, teams, currentScore + int(PostgresScore))
                 elif whiteListIsOn and blackListIsOn:
                     if teams in blackList:
                         print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
@@ -194,6 +203,10 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
                             scores.set("TotalScores", teams, 0)
                         currentScore = scores.getint("TotalScores", teams)
                         scores.set("TotalScores", teams, currentScore + int(PostgresScore))
+                        if not scores.has_option(serverScoresection, teams):
+                            scores.set(serverScoresection, teams, 0)
+                        currentScore = scores.getint(serverScoresection, teams)
+                        scores.set(serverScoresection, teams, currentScore + int(PostgresScore))
                     else:
                         print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
                 else:
@@ -201,12 +214,16 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
                         scores.set("TotalScores", teams, 0)
                     currentScore = scores.getint("TotalScores", teams)
                     scores.set("TotalScores", teams, currentScore + int(PostgresScore))
+                    if not scores.has_option(serverScoresection, teams):
+                        scores.set(serverScoresection, teams, 0)
+                    currentScore = scores.getint(serverScoresection, teams)
+                    scores.set(serverScoresection, teams, currentScore + int(PostgresScore))
         except (Exception, Error) as error:
             print(f"Ошибка при выполнении запроса: {error}")
             PostgresIsWorking = False
             return None
 '''
-loadPropAcc():
+loadPropAcc():s
     Imports all modules in the PropAcc Directory and returns a list of them to be initialized
 
 '''
@@ -271,7 +288,8 @@ def score(whiteList, blackList):
                     for port in portsToCheck:
                         if(port[0] == server[0]):
                             serverURL = serverURL + ":" + port[1]
-                print(CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore, whiteList, blackList))
+                if server[0] == "postgres":
+                    CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore, whiteList, blackList)
                 print(bcolors.GREEN + bcolors.BOLD + "Проверяем машину: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC)
                 url = urllib.request.urlopen(serverURL,None,10)
                 html = url.read()
