@@ -152,7 +152,8 @@ def CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin,
                 port=PostgresPort,
                 database="postgres",
                 user=PostgresLogin,
-                password=PostgresPass
+                password=PostgresPass,
+                connect_timeout = 5
             )
             # Создаем курсор
             cursor = connection.cursor()
@@ -290,21 +291,59 @@ def score(whiteList, blackList):
                             serverURL = serverURL + ":" + port[1]
                 if server[0] == "postgres":
                     CheckPostgres(PostgresEnabled, PostgresAddress, PostgresPort, PostgresLogin, PostgresPass, PostgresScore, whiteList, blackList)
-                print(bcolors.GREEN + bcolors.BOLD + "Проверяем машину: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC)
-                url = urllib.request.urlopen(serverURL,None,10)
-                html = url.read()
-                pattern = r'<team>(.*?)</team>'
-                team = re.findall(pattern, str(html), re.IGNORECASE)
-                team = list(set(team))
-                for teams in team:
-                    if not len(teams.replace(' ', '')) == 0:
-                        teams = teams.replace("_", " ").title().replace(" ", "_")
-                        print(bcolors.BOLD + "Машина " + server[0] + bcolors.ENDC + " взломана командой " + bcolors.RED + teams + bcolors.ENDC)
-                        for serverAndScore in scoresToAdd:
-                            serverScoresection = server[0]+"Scores"
-                            if str(server[1]) == str(serverAndScore[0]):
-                                if whiteListIsOn and not blackListIsOn:
-                                    if teams in whiteList:
+                else:
+                    print(bcolors.GREEN + bcolors.BOLD + "Проверяем машину: " + bcolors.RED + server[0] + bcolors.ENDC + " @ " + bcolors.BOLD + server[1] + bcolors.ENDC)
+                    url = urllib.request.urlopen(serverURL,None,5)
+                    html = url.read()
+                    pattern = r'<team>(.*?)</team>'
+                    team = re.findall(pattern, str(html), re.IGNORECASE)
+                    team = list(set(team))
+                    for teams in team:
+                        if not len(teams.replace(' ', '')) == 0:
+                            teams = teams.replace("_", " ").title().replace(" ", "_")
+                            print(bcolors.BOLD + "Машина " + server[0] + bcolors.ENDC + " взломана командой " + bcolors.RED + teams + bcolors.ENDC)
+                            for serverAndScore in scoresToAdd:
+                                serverScoresection = server[0]+"Scores"
+                                if str(server[1]) == str(serverAndScore[0]):
+                                    if whiteListIsOn and not blackListIsOn:
+                                        if teams in whiteList:
+                                            if not scores.has_option("TotalScores", teams):
+                                                scores.set("TotalScores", teams, 0)
+                                            currentScore = scores.getint( "TotalScores",teams)
+                                            scores.set( "TotalScores", teams, currentScore+int(serverAndScore[1]))
+                                            if not scores.has_option(serverScoresection, teams):
+                                                scores.set(serverScoresection, teams, 0)
+                                            currentScore = scores.getint( serverScoresection,teams)
+                                            scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
+                                        else:
+                                            print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
+                                    elif blackListIsOn and not whiteListIsOn:
+                                        if teams in blackList:
+                                            print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
+                                        else:
+                                            if not scores.has_option("TotalScores", teams):
+                                                scores.set("TotalScores", teams, 0)
+                                            currentScore = scores.getint( "TotalScores",teams)
+                                            scores.set( "TotalScores", teams, currentScore+int(serverAndScore[1]))
+                                            if not scores.has_option(serverScoresection, teams):
+                                                scores.set(serverScoresection, teams, 0)
+                                            currentScore = scores.getint( serverScoresection,teams)
+                                            scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
+                                    elif whiteListIsOn and blackListIsOn:
+                                        if teams in blackList:
+                                            print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
+                                        elif teams in whiteList:
+                                            if not scores.has_option("TotalScores", teams):
+                                                scores.set("TotalScores", teams, 0)
+                                            currentScore = scores.getint( "TotalScores",teams)
+                                            scores.set( "TotalScores", teams, currentScore+int(serverAndScore[1]))
+                                            if not scores.has_option(serverScoresection, teams):
+                                                scores.set(serverScoresection, teams, 0)
+                                            currentScore = scores.getint( serverScoresection,teams)
+                                            scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
+                                        else:
+                                            print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
+                                    else:
                                         if not scores.has_option("TotalScores", teams):
                                             scores.set("TotalScores", teams, 0)
                                         currentScore = scores.getint( "TotalScores",teams)
@@ -313,43 +352,6 @@ def score(whiteList, blackList):
                                             scores.set(serverScoresection, teams, 0)
                                         currentScore = scores.getint( serverScoresection,teams)
                                         scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
-                                    else:
-                                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
-                                elif blackListIsOn and not whiteListIsOn:
-                                    if teams in blackList:
-                                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
-                                    else:
-                                        if not scores.has_option("TotalScores", teams):
-                                            scores.set("TotalScores", teams, 0)
-                                        currentScore = scores.getint( "TotalScores",teams)
-                                        scores.set( "TotalScores", teams, currentScore+int(serverAndScore[1]))
-                                        if not scores.has_option(serverScoresection, teams):
-                                            scores.set(serverScoresection, teams, 0)
-                                        currentScore = scores.getint( serverScoresection,teams)
-                                        scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
-                                elif whiteListIsOn and blackListIsOn:
-                                    if teams in blackList:
-                                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " в блэклисте." + bcolors.ENDC)
-                                    elif teams in whiteList:
-                                        if not scores.has_option("TotalScores", teams):
-                                            scores.set("TotalScores", teams, 0)
-                                        currentScore = scores.getint( "TotalScores",teams)
-                                        scores.set( "TotalScores", teams, currentScore+int(serverAndScore[1]))
-                                        if not scores.has_option(serverScoresection, teams):
-                                            scores.set(serverScoresection, teams, 0)
-                                        currentScore = scores.getint( serverScoresection,teams)
-                                        scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
-                                    else:
-                                        print(bcolors.FAIL + bcolors.BOLD + "Команда: " + teams + " не в вайтлисте." + bcolors.ENDC)
-                                else:
-                                    if not scores.has_option("TotalScores", teams):
-                                        scores.set("TotalScores", teams, 0)
-                                    currentScore = scores.getint( "TotalScores",teams)
-                                    scores.set( "TotalScores", teams, currentScore+int(serverAndScore[1]))
-                                    if not scores.has_option(serverScoresection, teams):
-                                        scores.set(serverScoresection, teams, 0)
-                                    currentScore = scores.getint( serverScoresection,teams)
-                                    scores.set( serverScoresection, teams, currentScore+int(serverAndScore[1]))
             except IOError:
                 response = os.system("ping -c 1 " + server[1] + " > /dev/null 2>&1")
                 if (response == 0):
@@ -365,7 +367,6 @@ def score(whiteList, blackList):
                                 sock.connect((server[1], int(port[1])))
                                 break
                             else:
-                                print(server[0] + " работает")
                                 break
                     else:
                         sock.connect((server[1], 80))
@@ -720,8 +721,6 @@ def main():
                 outFileHandler = open(outfile2, 'w')
                 outFileHandler.write(serversPage)
                 outFileHandler.close()
-                print(PostgresEnabled)
-
                 print(bcolors.CYAN + bcolors.BOLD + "Следующее обновление через: " + bcolors.ENDC + str(sleepTime) + bcolors.BOLD + " секунд" + bcolors.ENDC)
                 time.sleep(sleepTime)
 
